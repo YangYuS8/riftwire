@@ -119,8 +119,9 @@ func _on_depleted() -> void:
 		return
 	_destroyed = true
 	velocity = Vector2.ZERO
-	_hurtbox.monitorable = false
-	_contact_damage_area.monitoring = false
+	set_physics_process(false)
+	_contact_damage_area.deactivate()
+	_hurtbox.set_deferred("monitorable", false)
 	destroyed.emit()
 	queue_free()
 
