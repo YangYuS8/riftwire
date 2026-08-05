@@ -13,6 +13,11 @@ func configure(direction: Vector2, p_speed: float, lifetime_seconds: float) -> v
 
 
 func _physics_process(delta: float) -> void:
+	simulate(delta)
+
+
+func simulate(delta: float) -> void:
+	assert(delta >= 0.0, "Projectile simulation delta cannot be negative.")
 	global_position += travel_direction * speed * delta
 	lifetime_remaining -= delta
 	if lifetime_remaining <= 0.0:

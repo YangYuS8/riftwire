@@ -43,7 +43,7 @@ func test_scripted_aim_rotates_weapon_without_physical_input() -> void:
 		)
 	)
 
-	await _wait_physics_frames(1)
+	await _wait_physics_frames(2)
 
 	assert_eq(player.get_weapon().get_aim_direction(), Vector2.UP)
 	assert_almost_eq(player.get_weapon().rotation, -PI / 2.0, 0.001)

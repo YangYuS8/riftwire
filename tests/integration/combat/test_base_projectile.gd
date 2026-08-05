@@ -3,6 +3,7 @@ extends GutTest
 const PROJECTILE_SCENE: PackedScene = preload(
 	"res://game/combat/projectiles/base_projectile.tscn"
 )
+const FIXED_DELTA: float = 1.0 / 60.0
 
 
 func test_projectile_moves_in_configured_direction() -> void:
@@ -13,10 +14,11 @@ func test_projectile_moves_in_configured_direction() -> void:
 	projectile.configure(Vector2.RIGHT, 120.0, 1.0)
 	var start_x := projectile.position.x
 
-	await _wait_physics_frames(3)
+	for _frame in range(3):
+		projectile.simulate(FIXED_DELTA)
 
-	assert_almost_eq(projectile.position.x, start_x + 6.0, 1.0)
-	assert_almost_eq(projectile.position.y, 0.0, 0.1)
+	assert_almost_eq(projectile.position.x, start_x + 6.0, 0.001)
+	assert_almost_eq(projectile.position.y, 0.0, 0.001)
 
 
 func test_projectile_expires_after_configured_lifetime() -> void:
