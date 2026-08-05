@@ -23,7 +23,12 @@ floor_stop_on_slope = true
 script = ExtResource("1_enemy")
 maximum_health = 30.0
 patrol_speed = 90.0
+chase_speed = 140.0
 patrol_half_width = 140.0
+engagement_range = 320.0
+disengagement_range = 420.0
+vertical_engagement_tolerance = 96.0
+vertical_disengagement_tolerance = 144.0
 contact_damage = 25.0
 contact_repeat_interval_seconds = 0.75
 
