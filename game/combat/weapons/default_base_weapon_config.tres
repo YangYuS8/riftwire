@@ -7,3 +7,4 @@ script = ExtResource("1_config")
 fire_interval_seconds = 0.15
 projectile_speed = 720.0
 projectile_lifetime_seconds = 1.5
+projectile_damage = 10.0

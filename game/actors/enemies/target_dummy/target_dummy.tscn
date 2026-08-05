@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://game/actors/enemies/target_dummy/target_dummy.gd" id="1_dummy"]
+[ext_resource type="Script" path="res://game/combat/health/health_component.gd" id="2_health"]
+[ext_resource type="Script" path="res://game/combat/damage/hurtbox.gd" id="3_hurtbox"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurtbox"]
+size = Vector2(36, 64)
+
+[node name="TargetDummy" type="Node2D"]
+script = ExtResource("1_dummy")
+maximum_health = 30.0
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+maximum_health = 30.0
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+monitorable = true
+script = ExtResource("3_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("RectangleShape2D_hurtbox")
+
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-18, -32, 18, -32, 18, 32, -18, 32)
+color = Color(0.9, 0.32, 0.28, 1)
+
+[node name="HealthLabel" type="Label" parent="."]
+offset_left = -48.0
+offset_top = -58.0
+offset_right = 48.0
+offset_bottom = -34.0
+theme_override_font_sizes/font_size = 14
+text = "30 / 30 HP"
+horizontal_alignment = 1
