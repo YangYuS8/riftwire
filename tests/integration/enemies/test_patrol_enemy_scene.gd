@@ -57,8 +57,8 @@ func test_three_default_projectiles_destroy_enemy_once() -> void:
 	enemy.gravity = 0.0
 	fixture.add_child(enemy)
 	await get_tree().process_frame
-	var destroyed_count := 0
-	enemy.destroyed.connect(func() -> void: destroyed_count += 1)
+	var destroyed_events: Array[int] = []
+	enemy.destroyed.connect(func() -> void: destroyed_events.append(1))
 
 	for _shot in range(3):
 		var projectile := BASE_PROJECTILE_SCENE.instantiate() as BaseProjectile
@@ -68,7 +68,7 @@ func test_three_default_projectiles_destroy_enemy_once() -> void:
 
 	await get_tree().process_frame
 
-	assert_eq(destroyed_count, 1)
+	assert_eq(destroyed_events.size(), 1)
 	assert_false(is_instance_valid(enemy))
 
 
