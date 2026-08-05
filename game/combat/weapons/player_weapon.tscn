@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/combat/weapons/player_weapon.gd" id="1_weapon"]
+[ext_resource type="Resource" path="res://game/combat/weapons/default_base_weapon_config.tres" id="2_config"]
+
+[node name="Weapon" type="Node2D"]
+script = ExtResource("1_weapon")
+config = ExtResource("2_config")
+
+[node name="AimLine" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 28, 0)
+width = 2.0
+default_color = Color(0.55, 0.92, 1, 0.8)
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(28, 0)
