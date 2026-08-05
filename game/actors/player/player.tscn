@@ -21,6 +21,8 @@ script = ExtResource("1_player")
 movement_config = ExtResource("2_config")
 maximum_health = 100.0
 respawn_delay_seconds = 0.5
+hit_invulnerability_seconds = 0.6
+respawn_invulnerability_seconds = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_player")
