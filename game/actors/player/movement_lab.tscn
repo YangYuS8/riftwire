@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="PackedScene" path="res://game/actors/player/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://game/actors/enemies/target_dummy/target_dummy.tscn" id="2_dummy"]
 [ext_resource type="PackedScene" path="res://game/combat/damage/contact_damage_area.tscn" id="3_hazard"]
+[ext_resource type="PackedScene" path="res://game/actors/enemies/patrol_enemy/patrol_enemy.tscn" id="4_patrol_enemy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1280, 64)
@@ -61,13 +62,14 @@ position = Vector2(340, 476)
 [node name="LandingDummy" parent="." instance=ExtResource("2_dummy")]
 position = Vector2(820, 556)
 
-[node name="FloorDummy" parent="." instance=ExtResource("2_dummy")]
-position = Vector2(1080, 624)
+[node name="FloorPatrolEnemy" parent="." instance=ExtResource("4_patrol_enemy")]
+position = Vector2(1060, 624)
+patrol_half_width = 140.0
 
 [node name="Instructions" type="Label" parent="."]
 offset_left = 28.0
 offset_top = 24.0
-offset_right = 1120.0
-offset_bottom = 132.0
+offset_right = 1180.0
+offset_bottom = 156.0
 theme_override_font_sizes/font_size = 20
-text = "Move: A/D or left stick    Jump: Space / A\nAim: Mouse or right stick    Fire: Left click / RB\nTargets: 30 HP, 10 damage per hit\nHazard: 25 damage every 0.75s; defeat resets to spawn"
+text = "Move: A/D or left stick    Jump: Space / A\nAim: Mouse or right stick    Fire: Left click / RB\nTargets and patrol enemy: 30 HP, 10 damage per hit\nHazard/enemy contact: 25 damage every 0.75s; defeat resets to spawn"

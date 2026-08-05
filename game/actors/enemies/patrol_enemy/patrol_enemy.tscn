@@ -1,0 +1,70 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://game/actors/enemies/patrol_enemy/patrol_enemy.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://game/combat/health/health_component.gd" id="2_health"]
+[ext_resource type="Script" path="res://game/combat/damage/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="Script" path="res://game/combat/damage/contact_damage_area.gd" id="4_contact"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
+radius = 13.0
+height = 48.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurtbox"]
+size = Vector2(30, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_contact"]
+size = Vector2(36, 52)
+
+[node name="PatrolEnemy" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 1
+floor_snap_length = 6.0
+floor_stop_on_slope = true
+script = ExtResource("1_enemy")
+maximum_health = 30.0
+patrol_speed = 90.0
+patrol_half_width = 140.0
+contact_damage = 25.0
+contact_repeat_interval_seconds = 0.75
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_body")
+
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-14, -24, 9, -24, 18, 0, 9, 24, -14, 24)
+color = Color(0.84, 0.22, 0.62, 1)
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+maximum_health = 30.0
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+monitorable = true
+script = ExtResource("3_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("RectangleShape2D_hurtbox")
+
+[node name="ContactDamageArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+monitoring = true
+monitorable = false
+script = ExtResource("4_contact")
+damage = 25.0
+repeat_interval_seconds = 0.75
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ContactDamageArea"]
+shape = SubResource("RectangleShape2D_contact")
+
+[node name="HealthLabel" type="Label" parent="."]
+offset_left = -48.0
+offset_top = -54.0
+offset_right = 48.0
+offset_bottom = -30.0
+theme_override_font_sizes/font_size = 14
+text = "30 / 30 HP"
+horizontal_alignment = 1
