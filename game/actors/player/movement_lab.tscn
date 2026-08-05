@@ -69,7 +69,7 @@ patrol_half_width = 140.0
 [node name="Instructions" type="Label" parent="."]
 offset_left = 28.0
 offset_top = 24.0
-offset_right = 1220.0
-offset_bottom = 176.0
+offset_right = 1240.0
+offset_bottom = 196.0
 theme_override_font_sizes/font_size = 20
-text = "Move: A/D or left stick    Jump: Space / A\nAim: Mouse or right stick    Fire: Left click / RB\nTargets and patrol enemy: 30 HP, 10 damage per hit\nPatrol enemy chases nearby same-level players, then returns to its route\nHazard/enemy contact: 25 damage every 0.75s; defeat resets to spawn"
+text = "Move: A/D or left stick    Jump: Space / A\nAim: Mouse or right stick    Fire: Left click / RB\nTargets and patrol enemy: 30 HP, 10 damage per hit\nPatrol enemy chases nearby same-level players, then returns to its route\nPlayer flashes during 0.6s hit protection; respawn grants 1.0s protection\nHazard/enemy contact: 25 damage every 0.75s; defeat resets to spawn"

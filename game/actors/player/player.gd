@@ -3,6 +3,8 @@ class_name RiftwirePlayer
 
 signal defeated
 signal respawned(spawn_position: Vector2)
+signal hit_recovery_started(duration_seconds: float)
+signal hit_recovery_ended
 
 const DEFAULT_MOVEMENT_CONFIG: PlayerMovementConfig = preload(
 	"res://game/actors/player/default_player_movement_config.tres"
@@ -11,6 +13,8 @@ const DEFAULT_MOVEMENT_CONFIG: PlayerMovementConfig = preload(
 @export var movement_config: PlayerMovementConfig
 @export_range(1.0, 1000000.0, 1.0, "or_greater") var maximum_health: float = 100.0
 @export_range(0.0, 5.0, 0.01, "or_greater") var respawn_delay_seconds: float = 0.5
+@export_range(0.0, 5.0, 0.01, "or_greater") var hit_invulnerability_seconds: float = 0.6
+@export_range(0.0, 5.0, 0.01, "or_greater") var respawn_invulnerability_seconds: float = 1.0
 
 var _input_source: PlayerInputSource
 var _movement_model: PlayerMovementModel
@@ -18,6 +22,7 @@ var _weapon: PlayerWeapon
 var _health_component: HealthComponent
 var _hurtbox: Hurtbox
 var _health_label: Label
+var _body_visual: CanvasItem
 var _spawn_global_position: Vector2
 var _respawn_remaining_seconds: float = 0.0
 var _is_defeated: bool = false
@@ -77,6 +82,18 @@ func is_defeated() -> bool:
 	return _is_defeated
 
 
+func is_hit_invulnerable() -> bool:
+	_ensure_dependencies()
+	return _hurtbox != null and _hurtbox.is_invulnerable()
+
+
+func get_hit_invulnerability_remaining_seconds() -> float:
+	_ensure_dependencies()
+	if _hurtbox == null:
+		return 0.0
+	return _hurtbox.get_invulnerability_remaining_seconds()
+
+
 func get_respawn_remaining_seconds() -> float:
 	return _respawn_remaining_seconds
 
@@ -122,6 +139,8 @@ func _ensure_dependencies() -> void:
 		_hurtbox = get_node_or_null("Hurtbox") as Hurtbox
 	if _health_label == null:
 		_health_label = get_node_or_null("HealthLabel") as Label
+	if _body_visual == null:
+		_body_visual = get_node_or_null("PlaceholderBody") as CanvasItem
 
 
 func _configure_health() -> void:
@@ -132,8 +151,35 @@ func _configure_health() -> void:
 		_health_component.health_changed.connect(_on_health_changed)
 	if not _health_component.depleted.is_connected(_on_health_depleted):
 		_health_component.depleted.connect(_on_health_depleted)
+	if not _hurtbox.damage_received.is_connected(_on_damage_received):
+		_hurtbox.damage_received.connect(_on_damage_received)
+	if not _hurtbox.invulnerability_started.is_connected(_on_invulnerability_started):
+		_hurtbox.invulnerability_started.connect(_on_invulnerability_started)
+	if not _hurtbox.invulnerability_ended.is_connected(_on_invulnerability_ended):
+		_hurtbox.invulnerability_ended.connect(_on_invulnerability_ended)
 	_health_component.configure(maximum_health)
 	_update_health_label()
+	_update_hit_recovery_presentation()
+
+
+func _on_damage_received(
+	_requested_damage: float,
+	applied_damage: float,
+	_remaining_health: float
+) -> void:
+	if _is_defeated or applied_damage <= 0.0:
+		return
+	_hurtbox.start_invulnerability(maxf(0.0, hit_invulnerability_seconds))
+
+
+func _on_invulnerability_started(duration_seconds: float) -> void:
+	_update_hit_recovery_presentation()
+	hit_recovery_started.emit(duration_seconds)
+
+
+func _on_invulnerability_ended() -> void:
+	_update_hit_recovery_presentation()
+	hit_recovery_ended.emit()
 
 
 func _on_health_changed(
@@ -150,6 +196,7 @@ func _on_health_depleted() -> void:
 	_is_defeated = true
 	_respawn_remaining_seconds = maxf(0.0, respawn_delay_seconds)
 	velocity = Vector2.ZERO
+	_hurtbox.clear_invulnerability()
 	collision_layer = 0
 	collision_mask = 0
 	visible = false
@@ -168,6 +215,7 @@ func _finish_respawn() -> void:
 	visible = true
 	_is_defeated = false
 	_respawn_remaining_seconds = 0.0
+	_hurtbox.start_invulnerability(maxf(0.0, respawn_invulnerability_seconds))
 	respawned.emit(_spawn_global_position)
 
 
@@ -178,3 +226,11 @@ func _update_health_label() -> void:
 		int(round(_health_component.current_health)),
 		int(round(_health_component.maximum_health)),
 	]
+
+
+func _update_hit_recovery_presentation() -> void:
+	if _body_visual == null:
+		return
+	var visual_modulate := _body_visual.modulate
+	visual_modulate.a = 0.45 if is_hit_invulnerable() else 1.0
+	_body_visual.modulate = visual_modulate
