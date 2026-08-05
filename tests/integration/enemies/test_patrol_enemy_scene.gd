@@ -6,6 +6,9 @@ const PATROL_ENEMY_SCENE: PackedScene = preload(
 const BASE_PROJECTILE_SCENE: PackedScene = preload(
 	"res://game/combat/projectiles/base_projectile.tscn"
 )
+const PLAYER_SCENE: PackedScene = preload(
+	"res://game/actors/player/player.tscn"
+)
 
 
 func test_scene_composes_existing_combat_components() -> void:
@@ -25,6 +28,7 @@ func test_scene_composes_existing_combat_components() -> void:
 		0.001
 	)
 	assert_eq(enemy.get_patrol_bounds(), Vector2(60.0, 340.0))
+	assert_eq(enemy.get_behavior_state(), EnemyEngagementModel.State.PATROL)
 
 
 func test_enemy_moves_horizontally_and_stays_inside_patrol_bounds() -> void:
@@ -48,6 +52,32 @@ func test_enemy_moves_horizontally_and_stays_inside_patrol_bounds() -> void:
 
 	assert_between(enemy.global_position.x, 79.999, 120.001)
 	assert_almost_eq(enemy.get_patrol_direction(), -1.0, 0.001)
+
+
+func test_player_group_is_acquired_and_chased_horizontally() -> void:
+	var fixture := Node2D.new()
+	add_child_autofree(fixture)
+	var player := PLAYER_SCENE.instantiate() as RiftwirePlayer
+	player.position = Vector2(260.0, 100.0)
+	fixture.add_child(player)
+	player.set_physics_process(false)
+
+	var enemy := PATROL_ENEMY_SCENE.instantiate() as PatrolEnemy
+	enemy.gravity = 0.0
+	enemy.patrol_speed = 0.0
+	enemy.chase_speed = 120.0
+	enemy.engagement_range = 300.0
+	enemy.disengagement_range = 400.0
+	enemy.position = Vector2(100.0, 100.0)
+	fixture.add_child(enemy)
+	var start_x := enemy.global_position.x
+
+	await _wait_physics_frames(5)
+
+	assert_eq(enemy.get_target(), player)
+	assert_eq(enemy.get_behavior_state(), EnemyEngagementModel.State.CHASE)
+	assert_eq(enemy.get_behavior_state_name(), &"CHASE")
+	assert_gt(enemy.global_position.x, start_x)
 
 
 func test_three_default_projectiles_destroy_enemy_once() -> void:
