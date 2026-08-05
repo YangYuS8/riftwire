@@ -72,6 +72,30 @@ func test_three_default_projectiles_destroy_enemy_once() -> void:
 	assert_false(is_instance_valid(enemy))
 
 
+func test_lethal_physics_overlap_destroys_enemy_without_reentrant_shutdown() -> void:
+	var fixture := Node2D.new()
+	add_child_autofree(fixture)
+	var enemy := PATROL_ENEMY_SCENE.instantiate() as PatrolEnemy
+	enemy.maximum_health = 10.0
+	enemy.gravity = 0.0
+	enemy.patrol_speed = 0.0
+	enemy.position = Vector2(100.0, 0.0)
+	fixture.add_child(enemy)
+	var destroyed_events: Array[int] = []
+	enemy.destroyed.connect(func() -> void: destroyed_events.append(1))
+
+	var projectile := BASE_PROJECTILE_SCENE.instantiate() as BaseProjectile
+	projectile.position = Vector2.ZERO
+	fixture.add_child(projectile)
+	projectile.configure(Vector2.RIGHT, 300.0, 1.0, 10.0)
+
+	await _wait_physics_frames(30)
+
+	assert_eq(destroyed_events.size(), 1)
+	assert_false(is_instance_valid(enemy))
+	assert_false(is_instance_valid(projectile))
+
+
 func _wait_physics_frames(frame_count: int) -> void:
 	for _frame in range(frame_count):
 		await get_tree().physics_frame
