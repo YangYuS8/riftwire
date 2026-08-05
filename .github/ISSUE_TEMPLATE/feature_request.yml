@@ -1,0 +1,61 @@
+name: Feature proposal
+description: Propose a player-facing feature or meaningful engineering capability
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or player need
+      description: Describe the problem before proposing implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: What should become possible or better?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Optional. Include alternatives and tradeoffs when known.
+  - type: textarea
+    id: scope
+    attributes:
+      label: Suggested scope
+      placeholder: |
+        In scope:
+        - ...
+        Out of scope:
+        - ...
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+  - type: dropdown
+    id: pillar
+    attributes:
+      label: Primary design pillar
+      options:
+        - Responsive platform shooting
+        - Ordered modular weapons
+        - Authored rooms / procedural runs
+        - Readable escalation
+        - Reproducibility and tooling
+        - Repository or collaboration infrastructure
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and dependencies
+      description: Consider scope, determinism, performance, content cost, accessibility, and asset licensing.

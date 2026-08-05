@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Sensitive security report
+    url: https://github.com/YangYuS8/riftwire/security/advisories/new
+    about: Report vulnerabilities privately. Do not post exploit details in a public Issue.
