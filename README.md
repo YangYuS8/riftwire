@@ -92,4 +92,4 @@ See [`docs/AGENT_WORKFLOW.md`](docs/AGENT_WORKFLOW.md) for the full human-agent 
 
 ## License
 
-No project license has been selected yet. Until a license file is added, the repository contents are not granted for redistribution or reuse beyond rights provided by GitHub's Terms of Service. Third-party assets must always retain their original license and attribution records.
+Riftwire is licensed under the [Mozilla Public License 2.0](LICENSE). Third-party assets retain their original licenses and must be recorded with their required attribution.
