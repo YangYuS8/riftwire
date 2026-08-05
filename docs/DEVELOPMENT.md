@@ -2,17 +2,50 @@
 
 ## Baseline
 
-Riftwire targets Godot 4.x with GDScript as the default implementation language. The exact minor version is intentionally not pinned during repository foundation; pin it before meaningful scene and resource work begins.
+Riftwire pins the following implementation baseline:
+
+- Godot 4.7.1 Standard;
+- GDScript;
+- Mobile renderer;
+- GUT 9.7.1 at the exact submodule commit recorded in ADR-0002;
+- Linux-first development, while keeping Windows compatibility in scope.
+
+See [`docs/adr/0002-engine-and-test-baseline.md`](adr/0002-engine-and-test-baseline.md) for the decision and upgrade policy.
 
 ## Recommended local tools
 
 - Git;
-- Git LFS only if large binary assets later justify it;
-- Godot 4 editor and headless executable;
+- Godot 4.7.1 Standard editor/headless executable;
 - an editor with EditorConfig support;
-- optional `gh` CLI for Issue and PR workflows.
+- optional `gh` CLI for Issue and PR workflows;
+- Git LFS only if large binary assets later justify it.
 
 Do not add a project-wide addon, formatter, linter, or native toolchain without documenting its purpose and maintenance cost.
+
+## Clone and bootstrap
+
+Clone submodules with the repository:
+
+```bash
+git clone --recurse-submodules https://github.com/YangYuS8/riftwire.git
+cd riftwire
+./tools/bootstrap.sh
+```
+
+For an existing clone:
+
+```bash
+git submodule update --init --recursive
+./tools/bootstrap.sh
+```
+
+When the executable is not named `godot`:
+
+```bash
+GODOT_BIN=/path/to/Godot ./tools/bootstrap.sh
+```
+
+The bootstrap command fails rather than silently accepting a different engine version.
 
 ## Open the project
 
@@ -20,11 +53,19 @@ Do not add a project-wide addon, formatter, linter, or native toolchain without 
 godot --editor --path .
 ```
 
-Basic headless import check once a pinned Godot version exists:
+## Run checks
 
 ```bash
-godot --headless --editor --quit --path .
+./tools/test.sh
 ```
+
+This performs:
+
+1. exact engine-version verification;
+2. GUT submodule initialization;
+3. headless Godot import;
+4. GUT unit and integration tests;
+5. JUnit output under `test-results/`.
 
 ## Repository hygiene
 
@@ -34,14 +75,16 @@ godot --headless --editor --quit --path .
 - Do not edit the same scene/resource concurrently across worktrees.
 - Move or rename Godot resources through the editor when dependency rewrites are needed.
 - Avoid committing local replay captures, profiling dumps, and screenshots unless they are intentional test fixtures or PR evidence.
+- After switching branches, update submodules before running the project.
 
-## Proposed directory responsibilities
+## Directory responsibilities
 
 - `game/`: shippable runtime content only.
 - `assets/`: source art/audio and attribution records; runtime imports may live near their owning game content when that improves locality.
 - `tests/`: automated tests and deterministic fixtures.
 - `tools/`: non-shipping editor tools, replay runners, validation scripts, and bots.
 - `docs/`: product and engineering contracts.
+- `addons/`: reviewed and pinned Godot addons; never edit vendored code as an undocumented shortcut.
 
 ## GDScript style
 
@@ -112,4 +155,4 @@ Before adding an addon or library, document:
 - runtime/editor-only status;
 - deterministic and headless-test impact.
 
-Vendor or pin dependencies where practical. Never execute unreviewed installation scripts from third-party asset packs.
+Dependencies must be pinned. Never execute unreviewed installation scripts from third-party asset packs.

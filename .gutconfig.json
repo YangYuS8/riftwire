@@ -1,0 +1,21 @@
+{
+  "dirs": [
+    "res://tests/unit",
+    "res://tests/integration"
+  ],
+  "double_strategy": "SCRIPT_ONLY",
+  "failure_error_types": [
+    "engine",
+    "gut",
+    "push_error"
+  ],
+  "hide_orphans": false,
+  "ignore_pause": false,
+  "include_subdirs": true,
+  "junit_xml_file": "res://test-results/gut.xml",
+  "junit_xml_timestamp": false,
+  "log_level": 2,
+  "prefix": "test_",
+  "should_exit": true,
+  "suffix": ".gd"
+}

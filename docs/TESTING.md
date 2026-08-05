@@ -2,11 +2,22 @@
 
 Real-time action games cannot be validated through unit tests alone. Riftwire uses layered evidence so deterministic rules, scene integration, player movement, visuals, and performance can be checked independently.
 
+## Automated test baseline
+
+- Framework: GUT 9.7.1;
+- engine: Godot 4.7.1 Standard;
+- configuration: `res://.gutconfig.json`;
+- local runner: `./tools/test.sh`;
+- CI runner: `.github/workflows/ci.yml`;
+- result format: JUnit XML under `test-results/`.
+
+GUT is pinned as a Git submodule. Tests must not depend on unpinned Asset Library state or a contributor's global editor addons.
+
 ## Test layers
 
 ### 1. Pure logic tests
 
-Use for code that can run without a rendered scene:
+Use GUT for code that can run without a rendered scene:
 
 - damage and mitigation;
 - health and invulnerability windows;
@@ -22,7 +33,7 @@ Pure logic tests should be fast and deterministic.
 
 ### 2. Scene integration tests
 
-Use minimal scenes to validate:
+Use GUT with minimal scenes to validate:
 
 - signal connections and cleanup;
 - hitbox/hurtbox interaction;
@@ -120,8 +131,8 @@ Before a room enters the generation pool, validate:
 
 | Change | Minimum evidence |
 |---|---|
-| Pure calculation/resource validation | Unit test |
-| New component or actor behavior | Unit or integration test |
+| Pure calculation/resource validation | GUT unit test |
+| New component or actor behavior | GUT unit or integration test |
 | Movement/physics change | Scripted input test + recording |
 | Weapon/module behavior | Logic test + combat fixture + recording |
 | Room/encounter | Room validation + fixed seed + screenshot/recording |

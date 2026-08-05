@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Godot 4.7.1 / GUT 9.7.1
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository and pinned addons
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Set up Godot
+        uses: chickensoft-games/setup-godot@v2.4.1
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+
+      - name: Verify engine version
+        run: godot --version
+
+      - name: Import project headlessly
+        run: godot --headless --editor --quit --path .
+
+      - name: Run GUT suite
+        run: |
+          mkdir -p test-results
+          godot --headless --path . -s addons/gut/gut_cmdln.gd \
+            -gconfig=res://.gutconfig.json \
+            -gexit
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: gut-results
+          path: test-results/
+          if-no-files-found: ignore

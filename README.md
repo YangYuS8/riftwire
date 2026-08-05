@@ -41,21 +41,28 @@ Randomized room graphs, shops, meta progression, pets, multiple characters, and 
 
 ## Technology baseline
 
-- Godot 4.x;
+- Godot 4.7.1 Standard;
 - GDScript-first;
-- text-based Godot scenes and resources committed to Git;
-- modular components and resources over deep inheritance;
+- Mobile renderer;
+- GUT 9.7.1, pinned as a Git submodule;
 - Linux-first development, with Windows compatibility kept in scope;
 - GitHub Issues, isolated branches/worktrees, and draft pull requests for collaboration.
 
-The exact Godot minor version will be pinned when implementation begins.
+See [`ADR-0002`](docs/adr/0002-engine-and-test-baseline.md) for the version and upgrade policy.
 
 ## Getting started
 
 ```bash
-git clone https://github.com/YangYuS8/riftwire.git
+git clone --recurse-submodules https://github.com/YangYuS8/riftwire.git
 cd riftwire
+./tools/bootstrap.sh
 godot --editor --path .
+```
+
+Run the current checks:
+
+```bash
+./tools/test.sh
 ```
 
 Before contributing, read:
@@ -69,6 +76,7 @@ Before contributing, read:
 ## Repository map
 
 ```text
+addons/     Reviewed and pinned Godot addons
 assets/     Licensed source assets and attribution records
 docs/       Product, architecture, workflow, and decision documents
 game/       Runtime scenes, scripts, resources, and UI
