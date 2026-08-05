@@ -45,7 +45,7 @@ When the executable is not named `godot`:
 GODOT_BIN=/path/to/Godot ./tools/bootstrap.sh
 ```
 
-The bootstrap command fails rather than silently accepting a different engine version.
+The bootstrap command fails rather than silently accepting a different engine version. It also copies the pinned plugin from `.vendor/gut/addons/gut` into the ignored `addons/gut` runtime path. Never edit the materialized copy; update the pinned dependency deliberately instead.
 
 ## Open the project
 
@@ -62,7 +62,7 @@ godot --editor --path .
 This performs:
 
 1. exact engine-version verification;
-2. GUT submodule initialization;
+2. GUT submodule initialization and plugin materialization;
 3. headless Godot import;
 4. GUT unit and integration tests;
 5. JUnit output under `test-results/`.
@@ -75,7 +75,7 @@ This performs:
 - Do not edit the same scene/resource concurrently across worktrees.
 - Move or rename Godot resources through the editor when dependency rewrites are needed.
 - Avoid committing local replay captures, profiling dumps, and screenshots unless they are intentional test fixtures or PR evidence.
-- After switching branches, update submodules before running the project.
+- After switching branches, rerun bootstrap before opening the project.
 
 ## Directory responsibilities
 
@@ -84,7 +84,8 @@ This performs:
 - `tests/`: automated tests and deterministic fixtures.
 - `tools/`: non-shipping editor tools, replay runners, validation scripts, and bots.
 - `docs/`: product and engineering contracts.
-- `addons/`: reviewed and pinned Godot addons; never edit vendored code as an undocumented shortcut.
+- `.vendor/`: exact upstream dependency repositories; not scanned as project content.
+- `addons/`: materialized reviewed Godot addons; generated dependency copies are ignored.
 
 ## GDScript style
 

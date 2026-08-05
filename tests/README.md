@@ -1,6 +1,6 @@
 # Tests
 
-Riftwire uses GUT 9.7.1 for GDScript unit and scene-integration tests. The dependency is pinned as the `addons/gut` Git submodule.
+Riftwire uses GUT 9.7.1 for GDScript unit and scene-integration tests. The full upstream repository is pinned under `.vendor/gut`; `tools/bootstrap.sh` materializes only its plugin directory into the ignored `addons/gut` path expected by Godot.
 
 ```text
 tests/

@@ -1,6 +1,9 @@
 # Godot 4 generated data
 .godot/
 
+# Materialized third-party addons
+/addons/gut/
+
 # Exported builds
 /build/
 /dist/

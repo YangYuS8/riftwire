@@ -16,9 +16,10 @@ Riftwire will use:
 2. **GDScript** as the default implementation language;
 3. the **Mobile renderer** as the primary renderer;
 4. **GUT 9.7.1** for GDScript unit and scene-integration tests;
-5. GUT pinned as the `addons/gut` Git submodule at commit `aeb5d4f3f7f0a6c9b5e178876d6c99b791fda605`;
-6. headless import and GUT execution in GitHub Actions;
-7. JUnit XML output retained as a CI artifact.
+5. the full GUT repository pinned under `.vendor/gut` at commit `aeb5d4f3f7f0a6c9b5e178876d6c99b791fda605`;
+6. `tools/bootstrap.sh` materializing only `.vendor/gut/addons/gut` into the ignored Godot plugin path `addons/gut`;
+7. headless import and GUT execution in GitHub Actions;
+8. JUnit XML output retained as a CI artifact.
 
 The engine version is recorded in `.godot-version`, documentation, project features, scripts, and CI. CI uses `chickensoft-games/setup-godot@v2.4.1` with the non-.NET editor.
 
@@ -30,6 +31,7 @@ The engine version is recorded in `.godot-version`, documentation, project featu
 - GUT 9.7.1 explicitly targets Godot 4.7.x and provides CLI execution, doubles, parameterized tests, and JUnit export.
 - Mobile offers a better balance for modern 2D effects and projectile-heavy scenes than Compatibility, with less baseline cost than Forward+.
 - Exact dependency commits make local, CI, human, and agent environments converge on the same behavior.
+- Keeping the upstream repository under a hidden vendor path prevents Godot from treating GUT's own `project.godot` as a nested project while retaining a reviewable version pin.
 
 ## Upgrade policy
 
@@ -58,11 +60,14 @@ GUT remains pinned until a deliberate dependency-update PR is reviewed. Replacin
 - contributors receive one command for environment verification and testing;
 - CI and local development use identical engine and framework versions;
 - agents can produce tests against a stable API;
-- modern 2D rendering features remain available without choosing Forward+ by default.
+- modern 2D rendering features remain available without choosing Forward+ by default;
+- only the actual plugin directory is exposed to Godot's project scanner.
 
 ### Negative
 
 - clones must initialize the GUT submodule;
+- bootstrap creates an ignored local copy of the plugin;
+- local changes made inside materialized `addons/gut` are discarded on the next bootstrap;
 - Mobile renderer requires hardware/platform support consistent with its Vulkan baseline;
 - Web and very old GPU support are not guaranteed by the primary renderer;
 - version upgrades require coordinated pin changes rather than silently following latest releases.
@@ -75,3 +80,4 @@ GUT remains pinned until a deliberate dependency-update PR is reviewed. Replacin
 - **Compatibility renderer:** simpler and broader, but unnecessarily limits the intended effects pipeline.
 - **Forward+:** capable, but has higher baseline cost than this 2D project currently needs.
 - **GdUnit4:** strong scene-testing capabilities, but GUT provides the smaller and currently explicit Godot 4.7.x baseline chosen for the first playable.
+- **Mounting the complete GUT repository directly at `addons/gut`:** rejected because its own project root causes Godot to ignore the directory as a nested project.

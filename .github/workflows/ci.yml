@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Checkout repository and pinned addons
+      - name: Checkout repository and pinned dependencies
         uses: actions/checkout@v6
         with:
           submodules: recursive
@@ -32,18 +32,8 @@ jobs:
           use-dotnet: false
           include-templates: false
 
-      - name: Verify engine version
-        run: godot --version
-
-      - name: Import project headlessly
-        run: godot --headless --editor --quit --path .
-
-      - name: Run GUT suite
-        run: |
-          mkdir -p test-results
-          godot --headless --path . -s addons/gut/gut_cmdln.gd \
-            -gconfig=res://.gutconfig.json \
-            -gexit
+      - name: Run repository checks
+        run: ./tools/test.sh
 
       - name: Upload test results
         if: always()
