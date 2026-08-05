@@ -21,7 +21,6 @@ var _movement_model: PlayerMovementModel
 var _weapon: PlayerWeapon
 var _health_component: HealthComponent
 var _hurtbox: Hurtbox
-var _health_label: Label
 var _body_visual: CanvasItem
 var _spawn_global_position: Vector2
 var _respawn_remaining_seconds: float = 0.0
@@ -137,8 +136,6 @@ func _ensure_dependencies() -> void:
 		_health_component = get_node_or_null("HealthComponent") as HealthComponent
 	if _hurtbox == null:
 		_hurtbox = get_node_or_null("Hurtbox") as Hurtbox
-	if _health_label == null:
-		_health_label = get_node_or_null("HealthLabel") as Label
 	if _body_visual == null:
 		_body_visual = get_node_or_null("PlaceholderBody") as CanvasItem
 
@@ -147,8 +144,6 @@ func _configure_health() -> void:
 	assert(_health_component != null, "Player requires a HealthComponent child.")
 	assert(_hurtbox != null, "Player requires a Hurtbox child.")
 	_hurtbox.set_health_component(_health_component)
-	if not _health_component.health_changed.is_connected(_on_health_changed):
-		_health_component.health_changed.connect(_on_health_changed)
 	if not _health_component.depleted.is_connected(_on_health_depleted):
 		_health_component.depleted.connect(_on_health_depleted)
 	if not _hurtbox.damage_received.is_connected(_on_damage_received):
@@ -158,7 +153,6 @@ func _configure_health() -> void:
 	if not _hurtbox.invulnerability_ended.is_connected(_on_invulnerability_ended):
 		_hurtbox.invulnerability_ended.connect(_on_invulnerability_ended)
 	_health_component.configure(maximum_health)
-	_update_health_label()
 	_update_hit_recovery_presentation()
 
 
@@ -180,14 +174,6 @@ func _on_invulnerability_started(duration_seconds: float) -> void:
 func _on_invulnerability_ended() -> void:
 	_update_hit_recovery_presentation()
 	hit_recovery_ended.emit()
-
-
-func _on_health_changed(
-	_previous_health: float,
-	_current_health: float,
-	_maximum_health: float
-) -> void:
-	_update_health_label()
 
 
 func _on_health_depleted() -> void:
@@ -217,15 +203,6 @@ func _finish_respawn() -> void:
 	_respawn_remaining_seconds = 0.0
 	_hurtbox.start_invulnerability(maxf(0.0, respawn_invulnerability_seconds))
 	respawned.emit(_spawn_global_position)
-
-
-func _update_health_label() -> void:
-	if _health_label == null or _health_component == null:
-		return
-	_health_label.text = "%d / %d HP" % [
-		int(round(_health_component.current_health)),
-		int(round(_health_component.maximum_health)),
-	]
 
 
 func _update_hit_recovery_presentation() -> void:
