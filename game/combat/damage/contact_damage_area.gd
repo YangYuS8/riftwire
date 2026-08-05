@@ -10,6 +10,10 @@ var _cooldowns_by_hurtbox_id: Dictionary = {}
 
 
 func _physics_process(delta: float) -> void:
+	if not monitoring:
+		_cooldowns_by_hurtbox_id.clear()
+		return
+
 	var overlapping_hurtboxes: Array[Hurtbox] = []
 	for area in get_overlapping_areas():
 		if area is Hurtbox:
@@ -43,6 +47,12 @@ func simulate(delta: float, overlapping_hurtboxes: Array[Hurtbox]) -> void:
 	for tracked_id in _cooldowns_by_hurtbox_id.keys():
 		if not active_hurtbox_ids.has(tracked_id):
 			_cooldowns_by_hurtbox_id.erase(tracked_id)
+
+
+func deactivate() -> void:
+	set_physics_process(false)
+	_cooldowns_by_hurtbox_id.clear()
+	set_deferred("monitoring", false)
 
 
 func get_tracked_contact_count() -> int:
