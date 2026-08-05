@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="BaseWeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/combat/weapons/base_weapon_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+fire_interval_seconds = 0.15
+projectile_speed = 720.0
+projectile_lifetime_seconds = 1.5
