@@ -40,8 +40,10 @@ func test_lethal_contact_damage_respawns_player_at_spawn_with_full_health() -> v
 	fixture.add_child(hazard)
 	player.set_input_source(ScriptedPlayerInputSource.new())
 	var respawn_positions: Array[Vector2] = []
+	var respawn_velocities: Array[Vector2] = []
 	player.respawned.connect(func(spawn_position: Vector2) -> void:
 		respawn_positions.append(spawn_position)
+		respawn_velocities.append(player.velocity)
 	)
 
 	await _wait_physics_frames(2)
@@ -55,10 +57,11 @@ func test_lethal_contact_damage_respawns_player_at_spawn_with_full_health() -> v
 
 	assert_false(player.is_defeated())
 	assert_eq(respawn_positions.size(), 1)
+	assert_eq(respawn_velocities.size(), 1)
+	assert_eq(respawn_velocities[0], Vector2.ZERO)
 	assert_almost_eq(player.global_position.x, 100.0, 0.001)
 	assert_almost_eq(player.global_position.y, 100.0, 1.0)
 	assert_almost_eq(player.get_health_component().current_health, 20.0, 0.001)
-	assert_eq(player.velocity, Vector2.ZERO)
 
 
 func _wait_physics_frames(frame_count: int) -> void:

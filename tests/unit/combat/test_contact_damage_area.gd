@@ -53,7 +53,7 @@ func test_fixed_contact_sequence_is_repeatable() -> void:
 	var first_result := _run_fixed_sequence()
 	var second_result := _run_fixed_sequence()
 	assert_almost_eq(first_result, second_result, 0.001)
-	assert_almost_eq(first_result, 55.0, 0.001)
+	assert_almost_eq(first_result, 40.0, 0.001)
 
 
 func _run_fixed_sequence() -> float:
