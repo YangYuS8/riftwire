@@ -45,7 +45,8 @@ func _spawn_projectile() -> void:
 	projectile.configure(
 		_aim_direction,
 		config.projectile_speed,
-		config.projectile_lifetime_seconds
+		config.projectile_lifetime_seconds,
+		config.projectile_damage
 	)
 
 	var player := get_parent()
