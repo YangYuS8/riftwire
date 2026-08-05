@@ -70,6 +70,8 @@ Open a draft PR early for meaningful work. A PR should contain:
 
 Keep PRs reviewable. As a guideline, split work when it changes several independent subsystems or requires unrelated review expertise.
 
+When the repository owner has granted task-specific or standing merge authorization, an agent may merge an ordinary scoped PR only after its required checks pass against the current head SHA. Use an expected-head safeguard and never bypass branch protection or required reviews.
+
 ## Code and content conventions
 
 - Prefer typed GDScript and explicit dependencies.
@@ -104,7 +106,7 @@ Reviewers should prioritize:
 4. performance and cleanup behavior;
 5. readability and documentation.
 
-Agents may prepare reviews, but a human retains merge authority during the foundation phase.
+Merge authority follows explicit repository-owner instructions. Standing authorization may cover ordinary scoped changes with green required checks, but material product or architecture decisions, licenses, major dependencies, external services, destructive operations, releases, access, secrets, billing, and external data collection still require explicit human approval.
 
 ## Reporting bugs
 
