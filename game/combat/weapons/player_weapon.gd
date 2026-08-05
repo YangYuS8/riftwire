@@ -12,6 +12,7 @@ const DEFAULT_PROJECTILE_SCENE: PackedScene = preload(
 
 @export var config: BaseWeaponConfig
 @export var projectile_scene: PackedScene
+@export var modules: Array[Resource] = []
 
 var _fire_model: WeaponFireModel
 var _aim_direction: Vector2 = Vector2.RIGHT
@@ -39,14 +40,30 @@ func get_fire_model() -> WeaponFireModel:
 	return _fire_model
 
 
-func _spawn_projectile() -> void:
-	var projectile := projectile_scene.instantiate() as BaseProjectile
-	assert(projectile != null, "Configured projectile scene must instantiate BaseProjectile.")
-	projectile.configure(
+func build_shot_specs() -> Array[ShotSpec]:
+	_ensure_dependencies()
+	var base_spec := ShotSpec.new(
 		_aim_direction,
 		config.projectile_speed,
 		config.projectile_lifetime_seconds,
 		config.projectile_damage
+	)
+	return WeaponShotPipeline.new(_validated_modules()).build(base_spec)
+
+
+func _spawn_projectile() -> void:
+	for shot_spec in build_shot_specs():
+		_spawn_projectile_from_spec(shot_spec)
+
+
+func _spawn_projectile_from_spec(shot_spec: ShotSpec) -> void:
+	var projectile := projectile_scene.instantiate() as BaseProjectile
+	assert(projectile != null, "Configured projectile scene must instantiate BaseProjectile.")
+	projectile.configure(
+		shot_spec.direction,
+		shot_spec.speed,
+		shot_spec.lifetime_seconds,
+		shot_spec.damage
 	)
 
 	var player := get_parent()
@@ -55,6 +72,19 @@ func _spawn_projectile() -> void:
 	spawn_parent.add_child(projectile)
 	projectile.global_position = _muzzle.global_position if _muzzle != null else global_position
 	projectile_fired.emit(projectile)
+
+
+func _validated_modules() -> Array[WeaponModule]:
+	var validated: Array[WeaponModule] = []
+	for resource in modules:
+		assert(resource is WeaponModule, "PlayerWeapon modules must inherit WeaponModule.")
+		var module := resource as WeaponModule
+		assert(
+			module.is_configuration_valid(),
+			"Invalid weapon module configuration: %s" % ", ".join(module.validation_errors())
+		)
+		validated.append(module)
+	return validated
 
 
 func _ensure_dependencies() -> void:
