@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://game/actors/player/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://game/actors/enemies/target_dummy/target_dummy.tscn" id="2_dummy"]
+[ext_resource type="PackedScene" path="res://game/combat/damage/contact_damage_area.tscn" id="3_hazard"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1280, 64)
@@ -51,6 +52,9 @@ shape = SubResource("RectangleShape2D_landing")
 polygon = PackedVector2Array(-180, -12, 180, -12, 180, 12, -180, 12)
 color = Color(0.24, 0.3, 0.42, 1)
 
+[node name="ContactHazard" parent="." instance=ExtResource("3_hazard")]
+position = Vector2(600, 632)
+
 [node name="LedgeDummy" parent="." instance=ExtResource("2_dummy")]
 position = Vector2(340, 476)
 
@@ -63,7 +67,7 @@ position = Vector2(1080, 624)
 [node name="Instructions" type="Label" parent="."]
 offset_left = 28.0
 offset_top = 24.0
-offset_right = 980.0
-offset_bottom = 108.0
+offset_right = 1120.0
+offset_bottom = 132.0
 theme_override_font_sizes/font_size = 20
-text = "Move: A/D or left stick    Jump: Space / A\nAim: Mouse or right stick    Fire: Left click / RB\nTargets: 30 HP, 10 damage per hit"
+text = "Move: A/D or left stick    Jump: Space / A\nAim: Mouse or right stick    Fire: Left click / RB\nTargets: 30 HP, 10 damage per hit\nHazard: 25 damage every 0.75s; defeat resets to spawn"
