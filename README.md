@@ -22,7 +22,7 @@ Changing the order changes the result. The goal is not to reproduce *Neon Abyss*
 2. **Readable chaos** — strong projectile combinations without losing combat readability.
 3. **Composable content** — weapons, modules, enemies, and encounters are data-driven and use shared behaviors.
 4. **Reproducible runs** — seeded generation, input recording, and structured telemetry make defects repeatable.
-5. **Human-directed agents** — agents may implement and verify scoped work, while humans retain product, architecture, licensing, and merge authority.
+5. **Human-directed agents** — humans retain product, architecture, licensing, and risk authority; agents may implement, verify, and merge ordinary scoped changes when explicitly authorized and required checks pass.
 
 ## First playable target
 
@@ -86,7 +86,7 @@ tools/      Editor tools, validation scripts, bots, and developer utilities
 
 ## Collaboration model
 
-Every non-trivial change should start from a clear Issue or task contract, use an isolated branch or worktree, and end in a draft PR containing validation evidence. Agents must not merge their own changes or silently broaden scope.
+Every non-trivial change should start from a clear Issue or task contract, use an isolated branch or worktree, and end in a draft PR containing validation evidence. Agents must not silently broaden scope. When the repository owner has granted applicable task-specific or standing merge authorization, agents may mark a completed PR ready and merge it after required checks pass against the current head SHA. Material product or architecture decisions and other high-risk actions still require explicit human approval.
 
 See [`docs/AGENT_WORKFLOW.md`](docs/AGENT_WORKFLOW.md) for the full human-agent workflow.
 
