@@ -64,6 +64,10 @@ func test_weapon_scene_exposes_split_specs_before_spawning() -> void:
 	var player := PLAYER_SCENE.instantiate() as RiftwirePlayer
 	add_child_autofree(player)
 	await get_tree().process_frame
+	player.get_weapon().simulate_input(
+		PlayerInputFrame.new(0.0, false, false, Vector2.RIGHT),
+		0.0
+	)
 
 	var specs := player.get_weapon().build_shot_specs()
 
