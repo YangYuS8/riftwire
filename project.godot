@@ -1,7 +1,10 @@
 ; Engine configuration file.
-; Prefer editing this file through the Godot editor.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
 ;
-; Riftwire development baseline: Godot 4.7.1 Standard, GDScript, Mobile renderer.
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
@@ -9,6 +12,7 @@ config_version=5
 
 config/name="Riftwire"
 config/description="A side-scrolling action roguelite built around modular weapon circuits."
+run/main_scene="res://game/actors/player/movement_lab.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 
 [display]
@@ -26,5 +30,4 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 [rendering]
 
 renderer/rendering_method="mobile"
-renderer/rendering_method.mobile="mobile"
 environment/defaults/default_clear_color=Color(0.035, 0.039, 0.055, 1)
