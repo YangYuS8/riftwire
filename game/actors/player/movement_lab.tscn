@@ -1,0 +1,59 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://game/actors/player/player.tscn" id="1_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1280, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ledge"]
+size = Vector2(320, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_landing"]
+size = Vector2(360, 24)
+
+[node name="MovementLab" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+enabled = true
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(180, 430)
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(640, 688)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Visual" type="Polygon2D" parent="Floor"]
+polygon = PackedVector2Array(-640, -32, 640, -32, 640, 32, -640, 32)
+color = Color(0.12, 0.15, 0.22, 1)
+
+[node name="Ledge" type="StaticBody2D" parent="."]
+position = Vector2(340, 520)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ledge"]
+shape = SubResource("RectangleShape2D_ledge")
+
+[node name="Visual" type="Polygon2D" parent="Ledge"]
+polygon = PackedVector2Array(-160, -12, 160, -12, 160, 12, -160, 12)
+color = Color(0.24, 0.3, 0.42, 1)
+
+[node name="Landing" type="StaticBody2D" parent="."]
+position = Vector2(820, 600)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Landing"]
+shape = SubResource("RectangleShape2D_landing")
+
+[node name="Visual" type="Polygon2D" parent="Landing"]
+polygon = PackedVector2Array(-180, -12, 180, -12, 180, 12, -180, 12)
+color = Color(0.24, 0.3, 0.42, 1)
+
+[node name="Instructions" type="Label" parent="."]
+offset_left = 28.0
+offset_top = 24.0
+offset_right = 430.0
+offset_bottom = 54.0
+theme_override_font_sizes/font_size = 20
+text = "Move: A/D or arrows    Jump: Space"

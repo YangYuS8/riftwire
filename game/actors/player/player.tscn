@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/actors/player/player.gd" id="1_player"]
+[ext_resource type="Resource" path="res://game/actors/player/default_player_movement_config.tres" id="2_config"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
+radius = 14.0
+height = 56.0
+
+[node name="Player" type="CharacterBody2D"]
+floor_snap_length = 6.0
+floor_stop_on_slope = true
+script = ExtResource("1_player")
+movement_config = ExtResource("2_config")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_player")
+
+[node name="PlaceholderBody" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-14, -28, 14, -28, 14, 28, -14, 28)
+color = Color(0.2, 0.85, 1, 1)
