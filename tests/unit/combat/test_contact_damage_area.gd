@@ -56,6 +56,29 @@ func test_fixed_contact_sequence_is_repeatable() -> void:
 	assert_almost_eq(first_result, 40.0, 0.001)
 
 
+func test_deactivate_stops_processing_clears_contacts_and_defers_monitoring() -> void:
+	var fixture := Node.new()
+	add_child_autofree(fixture)
+	var health := HealthComponent.new()
+	var hurtbox := Hurtbox.new()
+	var damage_area := ContactDamageArea.new()
+	fixture.add_child(health)
+	fixture.add_child(hurtbox)
+	fixture.add_child(damage_area)
+	health.configure(100.0)
+	hurtbox.set_health_component(health)
+	var contacts: Array[Hurtbox] = [hurtbox]
+	damage_area.simulate(0.0, contacts)
+	assert_eq(damage_area.get_tracked_contact_count(), 1)
+
+	damage_area.deactivate()
+
+	assert_false(damage_area.is_physics_processing())
+	assert_eq(damage_area.get_tracked_contact_count(), 0)
+	await get_tree().process_frame
+	assert_false(damage_area.monitoring)
+
+
 func _run_fixed_sequence() -> float:
 	var fixture := Node.new()
 	add_child_autofree(fixture)
