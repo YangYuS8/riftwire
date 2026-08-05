@@ -1,0 +1,70 @@
+name: Agent-ready task
+description: Define a bounded implementation or research task suitable for a human or coding agent
+title: "[Task]: "
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: State one concrete outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Link relevant docs, ADRs, Issues, code, and prior decisions.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope boundaries
+      placeholder: |
+        In scope:
+        - ...
+        Out of scope:
+        - ...
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+  - type: textarea
+    id: ownership
+    attributes:
+      label: Owned files or subsystems
+      description: Identify files/scenes/resources this task may modify and known concurrency conflicts.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Required validation
+      description: Tests, seeds, replay, screenshots, recordings, or performance metrics.
+    validations:
+      required: true
+  - type: textarea
+    id: decisions
+    attributes:
+      label: Human decisions required
+      description: List unresolved product, architecture, dependency, license, or asset questions. Use N/A when none.
+    validations:
+      required: true
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Ready-to-start checks
+      options:
+        - label: The task is small enough for one branch and one primary owner.
+          required: true
+        - label: Acceptance criteria are testable or observable.
+          required: true
+        - label: Conflicting file ownership has been checked.
+          required: true

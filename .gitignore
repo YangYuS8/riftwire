@@ -1,0 +1,38 @@
+# Godot 4 generated data
+.godot/
+
+# Exported builds
+/build/
+/dist/
+/export/
+
+# Mono/C# artifacts if introduced later
+.mono/
+
+# Editor and IDE state
+.idea/
+.vscode/
+*.code-workspace
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Logs, captures, local replay output
+*.log
+/coverage/
+/test-results/
+/replays/local/
+/captures/local/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Temporary files
+*.tmp
+*.swp
+*~

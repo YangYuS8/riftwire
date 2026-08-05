@@ -1,0 +1,81 @@
+name: Bug report
+description: Report a reproducible gameplay, tooling, or repository defect
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Include a seed, replay/input sequence, logs, and visual evidence whenever available.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Start run with seed ...
+        2. Enter room ...
+        3. Equip modules in order ...
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit or build
+      placeholder: Commit SHA, branch, or build identifier
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: Godot version, OS, GPU/input device when relevant
+    validations:
+      required: true
+  - type: input
+    id: seed
+    attributes:
+      label: Run seed
+      placeholder: Seed or N/A
+  - type: textarea
+    id: build
+    attributes:
+      label: Weapon and ordered module chain
+      placeholder: Base weapon -> module A -> module B
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs, replay, screenshots, or recording
+      description: Attach files or paste relevant excerpts. Remove secrets and private data.
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: Frequency
+      options:
+        - Always
+        - Often
+        - Sometimes
+        - Once
+        - Unknown
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission checks
+      options:
+        - label: I searched for an existing Issue.
+          required: true
+        - label: I removed credentials and private data from evidence.
+          required: true
