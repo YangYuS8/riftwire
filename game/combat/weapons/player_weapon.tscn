@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://game/combat/weapons/player_weapon.gd" id="1_weapon"]
 [ext_resource type="Resource" path="res://game/combat/weapons/default_base_weapon_config.tres" id="2_config"]
+[ext_resource type="Resource" path="res://game/content/modules/default_split_module.tres" id="3_split"]
 
 [node name="Weapon" type="Node2D"]
 script = ExtResource("1_weapon")
 config = ExtResource("2_config")
+modules = Array[Resource]([ExtResource("3_split")])
 
 [node name="AimLine" type="Line2D" parent="."]
 points = PackedVector2Array(0, 0, 28, 0)

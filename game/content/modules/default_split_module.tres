@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="SplitShotModule" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/content/modules/split_shot_module.gd" id="1_split"]
+
+[resource]
+script = ExtResource("1_split")
+projectile_count = 3
+spread_degrees = 24.0
