@@ -78,6 +78,74 @@ func test_split_module_creates_even_fan_with_provenance() -> void:
 		assert_almost_eq(shot.damage, 10.0, 0.001)
 
 
+func test_focus_converges_existing_fan_without_generating_shots() -> void:
+	var focus := FocusShotModule.new()
+	focus.strength = 0.5
+	var shots: Array[ShotSpec] = [
+		ShotSpec.new(
+			Vector2.RIGHT.rotated(deg_to_rad(-12.0)),
+			720.0,
+			1.5,
+			10.0,
+			1,
+			PackedStringArray(["split"])
+		),
+		ShotSpec.new(
+			Vector2.RIGHT,
+			720.0,
+			1.5,
+			10.0,
+			1,
+			PackedStringArray(["split"])
+		),
+		ShotSpec.new(
+			Vector2.RIGHT.rotated(deg_to_rad(12.0)),
+			720.0,
+			1.5,
+			10.0,
+			1,
+			PackedStringArray(["split"])
+		),
+	]
+
+	var result := focus.transform(shots)
+
+	assert_eq(result.size(), 3)
+	assert_almost_eq(result[0].direction.angle(), deg_to_rad(-6.0), 0.0001)
+	assert_almost_eq(result[1].direction.angle(), 0.0, 0.0001)
+	assert_almost_eq(result[2].direction.angle(), deg_to_rad(6.0), 0.0001)
+	for shot in result:
+		assert_eq(shot.generation_depth, 1)
+		assert_eq(shot.provenance, PackedStringArray(["split", "focus"]))
+	assert_almost_eq(shots[0].direction.angle(), deg_to_rad(-12.0), 0.0001)
+	assert_eq(shots[0].provenance, PackedStringArray(["split"]))
+
+
+func test_split_and_focus_order_changes_visible_fan_width() -> void:
+	var split := SplitShotModule.new()
+	split.projectile_count = 3
+	split.spread_degrees = 24.0
+	var focus := FocusShotModule.new()
+	focus.strength = 0.5
+	var split_then_focus: Array[WeaponModule] = [split, focus]
+	var focus_then_split: Array[WeaponModule] = [focus, split]
+	var base_spec := ShotSpec.new(Vector2.RIGHT, 720.0, 1.5, 10.0)
+
+	var focused_fan := WeaponShotPipeline.new(split_then_focus).build(base_spec)
+	var wide_fan := WeaponShotPipeline.new(focus_then_split).build(base_spec)
+
+	assert_eq(focused_fan.size(), 3)
+	assert_eq(wide_fan.size(), 3)
+	assert_almost_eq(_fan_width_degrees(focused_fan), 12.0, 0.001)
+	assert_almost_eq(_fan_width_degrees(wide_fan), 24.0, 0.001)
+	assert_eq(focused_fan[0].provenance, PackedStringArray(["split", "focus"]))
+	assert_eq(wide_fan[0].provenance, PackedStringArray(["focus", "split"]))
+	for shot in focused_fan:
+		assert_eq(shot.generation_depth, 1)
+	for shot in wide_fan:
+		assert_eq(shot.generation_depth, 1)
+
+
 func test_pipeline_caps_output_at_thirty_two_specs() -> void:
 	var modules: Array[WeaponModule] = []
 	for _module_index in range(4):
@@ -121,3 +189,8 @@ func test_empty_module_chain_preserves_base_shot() -> void:
 	assert_almost_eq(result[0].damage, 7.5, 0.001)
 	assert_eq(result[0].generation_depth, 0)
 	assert_true(result[0].provenance.is_empty())
+
+
+func _fan_width_degrees(shots: Array[ShotSpec]) -> float:
+	assert(shots.size() >= 2)
+	return absf(rad_to_deg(shots[0].direction.angle_to(shots[shots.size() - 1].direction)))

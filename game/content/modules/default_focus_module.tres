@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="FocusShotModule" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/content/modules/focus_shot_module.gd" id="1_focus"]
+
+[resource]
+script = ExtResource("1_focus")
+strength = 0.5

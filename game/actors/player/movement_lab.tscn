@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="PackedScene" path="res://game/actors/player/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://game/actors/enemies/target_dummy/target_dummy.tscn" id="2_dummy"]
 [ext_resource type="PackedScene" path="res://game/combat/damage/contact_damage_area.tscn" id="3_hazard"]
 [ext_resource type="PackedScene" path="res://game/actors/enemies/patrol_enemy/patrol_enemy.tscn" id="4_patrol_enemy"]
 [ext_resource type="PackedScene" path="res://game/ui/player_health_hud.tscn" id="5_health_hud"]
+[ext_resource type="Script" path="res://game/actors/player/movement_lab.gd" id="6_lab"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(1280, 64)
@@ -16,6 +17,7 @@ size = Vector2(320, 24)
 size = Vector2(360, 24)
 
 [node name="MovementLab" type="Node2D"]
+script = ExtResource("6_lab")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(640, 360)
@@ -70,10 +72,18 @@ position = Vector2(820, 556)
 position = Vector2(1060, 624)
 patrol_half_width = 140.0
 
+[node name="CircuitStatus" type="Label" parent="."]
+offset_left = 28.0
+offset_top = 92.0
+offset_right = 900.0
+offset_bottom = 124.0
+theme_override_font_sizes/font_size = 22
+text = "Circuit 1: Split -> Focus | 3 shots, 12-degree focused fan"
+
 [node name="Instructions" type="Label" parent="."]
 offset_left = 28.0
-offset_top = 128.0
+offset_top = 138.0
 offset_right = 1240.0
-offset_bottom = 316.0
+offset_bottom = 342.0
 theme_override_font_sizes/font_size = 20
-text = "Move: A/D or left stick    Jump: Space / A\nAim: Mouse or right stick    Fire: Left click / RB\nEquipped circuit: Split (one fire event produces a three-projectile fan)\nTargets and patrol enemy: 30 HP, 10 damage per projectile\nPatrol enemy chases nearby same-level players, then returns to its route\nScreen HUD tracks player health; body fades during 0.6s hit protection\nHazard/enemy contact: 25 damage every 0.75s; defeat resets to spawn"
+text = "Move: A/D or left stick    Jump: Space / A\nAim: Mouse or right stick    Fire: Left click / RB\nCircuit order: press 1 for Split -> Focus; press 2 for Focus -> Split\nThe same two modules produce narrow or wide fans solely by changing order\nTargets and patrol enemy: 30 HP, 10 damage per projectile\nPatrol enemy chases nearby same-level players, then returns to its route\nScreen HUD tracks player health; body fades during 0.6s hit protection\nHazard/enemy contact: 25 damage every 0.75s; defeat resets to spawn"

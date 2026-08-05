@@ -3,7 +3,7 @@ extends GutTest
 const PLAYER_SCENE: PackedScene = preload("res://game/actors/player/player.tscn")
 
 
-func test_scripted_held_fire_spawns_repeatable_split_projectile_count() -> void:
+func test_scripted_held_fire_spawns_repeatable_focused_split_projectile_count() -> void:
 	var fixture := Node2D.new()
 	add_child_autofree(fixture)
 	var player := PLAYER_SCENE.instantiate() as RiftwirePlayer
@@ -60,7 +60,7 @@ func test_scripted_aim_rotates_weapon_without_physical_input() -> void:
 	assert_almost_eq(player.get_weapon().rotation, -PI / 2.0, 0.001)
 
 
-func test_weapon_scene_exposes_split_specs_before_spawning() -> void:
+func test_weapon_scene_exposes_split_then_focus_specs_before_spawning() -> void:
 	var player := PLAYER_SCENE.instantiate() as RiftwirePlayer
 	add_child_autofree(player)
 	await get_tree().process_frame
@@ -72,12 +72,12 @@ func test_weapon_scene_exposes_split_specs_before_spawning() -> void:
 	var specs := player.get_weapon().build_shot_specs()
 
 	assert_eq(specs.size(), 3)
-	assert_true(specs[0].direction.y < 0.0)
+	assert_almost_eq(specs[0].direction.angle(), deg_to_rad(-6.0), 0.0001)
 	assert_almost_eq(specs[1].direction.angle(), 0.0, 0.0001)
-	assert_true(specs[2].direction.y > 0.0)
+	assert_almost_eq(specs[2].direction.angle(), deg_to_rad(6.0), 0.0001)
 	for spec in specs:
 		assert_eq(spec.generation_depth, 1)
-		assert_eq(spec.provenance, PackedStringArray(["split"]))
+		assert_eq(spec.provenance, PackedStringArray(["split", "focus"]))
 
 
 func _projectiles_in(parent: Node) -> Array[BaseProjectile]:
