@@ -6,7 +6,7 @@ This file defines the operating contract for every coding agent, subagent, autom
 
 When instructions conflict, follow this order:
 
-1. explicit instructions from the repository owner in the current task;
+1. explicit instructions from the repository owner in the current task, including standing authorizations that clearly apply;
 2. accepted ADRs in `docs/adr/`;
 3. this file;
 4. `CONTRIBUTING.md` and other repository documentation;
@@ -39,7 +39,7 @@ These constraints require explicit human approval to change:
 - gameplay rules must not depend on animation completion;
 - no network service or multiplayer in the first playable;
 - no unlicensed or provenance-unknown assets;
-- human review before merge.
+- merge authority follows repository-owner instructions; agent self-merge is allowed only under explicit task-specific or standing authorization and after required checks pass.
 
 ## 4. Work protocol
 
@@ -50,7 +50,8 @@ These constraints require explicit human approval to change:
 5. Add or update tests with the implementation.
 6. Run the smallest relevant checks, then the broader available checks.
 7. Open a draft PR and report evidence, limitations, and follow-up work.
-8. Stop when the acceptance criteria are met. Do not opportunistically redesign unrelated systems.
+8. When the acceptance criteria and required checks are complete, mark the PR ready. If the repository owner has explicitly authorized agent merge, re-check the PR head and merge using an expected head SHA. Otherwise hand off for human merge.
+9. Stop when the acceptance criteria are met. Do not opportunistically redesign unrelated systems.
 
 Recommended agent branch format:
 
@@ -67,11 +68,13 @@ Agents may, when in scope:
 - create implementation branches and draft PRs;
 - add scripts, scenes, resources, tests, and documentation;
 - refactor code covered by relevant tests;
-- create small temporary debug tools that are removed or documented before merge.
+- create small temporary debug tools that are removed or documented before merge;
+- merge their own PR after required checks pass when explicit repository-owner authorization applies.
 
 Agents must not without explicit human approval:
 
-- merge or approve their own PR;
+- approve their own PR or bypass required reviews/checks;
+- merge their own PR when no applicable task-specific or standing authorization exists;
 - push directly to `main`;
 - alter repository visibility, branch protection, secrets, billing, or access;
 - select or change the project license;
@@ -80,6 +83,8 @@ Agents must not without explicit human approval:
 - add a new engine, language, native extension, or major dependency;
 - perform destructive history rewrites;
 - delete user-authored content merely because it appears unused.
+
+Standing authorization to merge ordinary scoped changes does not authorize material product or architecture decisions, license changes, major dependencies, destructive or irreversible operations, releases, access changes, secrets, billing, or external data collection. Escalate those decisions before implementation or merge.
 
 ## 6. Implementation rules
 
@@ -126,6 +131,8 @@ Choose evidence appropriate to the change:
 - fixed seeds for generation and encounter defects.
 
 Never claim a test passed if it was not run. State exactly what was run and why anything was skipped.
+
+Before an authorized agent merge, verify that required checks correspond to the current PR head SHA. Use `expected_head_sha` or an equivalent safeguard so a moved branch cannot be merged accidentally.
 
 ## 8. Definition of done
 
