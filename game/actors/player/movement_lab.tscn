@@ -29,6 +29,45 @@ position = Vector2(180, 430)
 [node name="PlayerHealthHud" parent="." instance=ExtResource("5_health_hud")]
 player_path = NodePath("../Player")
 
+[node name="CircuitHud" type="CanvasLayer" parent="."]
+layer = 9
+
+[node name="Root" type="Control" parent="CircuitHud"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CircuitStatus" type="Label" parent="CircuitHud/Root"]
+layout_mode = 0
+offset_left = 340.0
+offset_top = 24.0
+offset_right = 1250.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 22
+text = "Circuit: [Split] -> Focus -> Reverse Order -> Velocity Gradient -> Lifetime Gradient"
+
+[node name="CircuitPreview" type="Label" parent="CircuitHud/Root"]
+layout_mode = 0
+offset_left = 340.0
+offset_top = 58.0
+offset_right = 1250.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 20
+text = "Preview: 3 shots | 12.0-degree fan | speed 540 / 720 / 900 | lifetime 0.90 / 1.50 / 2.10 s"
+
+[node name="Instructions" type="Label" parent="CircuitHud/Root"]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 132.0
+offset_right = 1240.0
+offset_bottom = 384.0
+theme_override_font_sizes/font_size = 20
+text = "Move: A/D or left stick    Jump: Space / A\nAim: Mouse or right stick    Fire: Left click / RB\nCircuit: 1-5 select a slot    Q/E move selected module left/right    R reset\nReverse Order changes which fan side receives downstream gradient values\nLifetime Gradient changes projectile travel distance; Velocity Gradient changes spacing\nTargets and patrol enemy: 30 HP, 10 damage per projectile\nPatrol enemy chases nearby same-level players, then returns to its route\nScreen HUD tracks player health; body fades during 0.6s hit protection\nHazard/enemy contact: 25 damage every 0.75s; defeat resets to spawn"
+
 [node name="Floor" type="StaticBody2D" parent="."]
 position = Vector2(640, 688)
 
@@ -71,27 +110,3 @@ position = Vector2(820, 556)
 [node name="FloorPatrolEnemy" parent="." instance=ExtResource("4_patrol_enemy")]
 position = Vector2(1060, 624)
 patrol_half_width = 140.0
-
-[node name="CircuitStatus" type="Label" parent="."]
-offset_left = 28.0
-offset_top = 92.0
-offset_right = 1250.0
-offset_bottom = 124.0
-theme_override_font_sizes/font_size = 22
-text = "Circuit: [Split] -> Focus -> Reverse Order -> Velocity Gradient -> Lifetime Gradient"
-
-[node name="CircuitPreview" type="Label" parent="."]
-offset_left = 28.0
-offset_top = 126.0
-offset_right = 1250.0
-offset_bottom = 158.0
-theme_override_font_sizes/font_size = 20
-text = "Preview: 3 shots | 12.0-degree fan | speed 540 / 720 / 900 | lifetime 0.90 / 1.50 / 2.10 s"
-
-[node name="Instructions" type="Label" parent="."]
-offset_left = 28.0
-offset_top = 172.0
-offset_right = 1240.0
-offset_bottom = 424.0
-theme_override_font_sizes/font_size = 20
-text = "Move: A/D or left stick    Jump: Space / A\nAim: Mouse or right stick    Fire: Left click / RB\nCircuit: 1-5 select a slot    Q/E move selected module left/right    R reset\nReverse Order changes which fan side receives downstream gradient values\nLifetime Gradient changes projectile travel distance; Velocity Gradient changes spacing\nTargets and patrol enemy: 30 HP, 10 damage per projectile\nPatrol enemy chases nearby same-level players, then returns to its route\nScreen HUD tracks player health; body fades during 0.6s hit protection\nHazard/enemy contact: 25 damage every 0.75s; defeat resets to spawn"
