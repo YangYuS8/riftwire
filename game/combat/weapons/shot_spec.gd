@@ -86,6 +86,20 @@ func with_speed(p_speed: float, module_id: StringName = &"") -> ShotSpec:
 	)
 
 
+func with_lifetime(
+	p_lifetime_seconds: float,
+	module_id: StringName = &""
+) -> ShotSpec:
+	return ShotSpec.new(
+		_direction,
+		_speed,
+		p_lifetime_seconds,
+		_damage,
+		_generation_depth,
+		_provenance_with(module_id)
+	)
+
+
 func with_damage(p_damage: float, module_id: StringName = &"") -> ShotSpec:
 	return ShotSpec.new(
 		_direction,

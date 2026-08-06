@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="LifetimeGradientShotModule" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/content/modules/lifetime_gradient_shot_module.gd" id="1_lifetime_gradient"]
+
+[resource]
+script = ExtResource("1_lifetime_gradient")
+minimum_multiplier = 0.6
+maximum_multiplier = 1.4

@@ -5,7 +5,7 @@ const MOVEMENT_LAB_SCENE: PackedScene = preload(
 )
 
 
-func test_lab_switches_between_real_module_orders() -> void:
+func test_lab_reorders_the_live_five_slot_weapon_circuit() -> void:
 	var lab := MOVEMENT_LAB_SCENE.instantiate() as MovementLab
 	add_child_autofree(lab)
 	await get_tree().process_frame
@@ -15,81 +15,109 @@ func test_lab_switches_between_real_module_orders() -> void:
 		0.0
 	)
 
-	var focused_fan := weapon.build_shot_specs()
-
-	assert_eq(lab.get_selected_circuit(), MovementLab.CircuitOrder.SPLIT_THEN_FOCUS)
-	assert_eq(focused_fan.size(), 3)
-	assert_almost_eq(_fan_width_degrees(focused_fan), 12.0, 0.001)
 	assert_eq(
-		focused_fan[0].provenance,
-		PackedStringArray(["split", "focus"])
+		lab.get_module_ids(),
+		PackedStringArray([
+			"split",
+			"focus",
+			"reverse_order",
+			"velocity_gradient",
+			"lifetime_gradient",
+		])
 	)
-	assert_true(lab.get_circuit_status_text().contains("Split -> Focus"))
+	assert_eq(weapon.get_module_ids(), lab.get_module_ids())
+	assert_eq(lab.get_selected_slot(), 0)
+	assert_true(lab.get_circuit_status_text().contains("[Split]"))
 
-	lab.select_circuit(MovementLab.CircuitOrder.FOCUS_THEN_SPLIT)
-	var wide_fan := weapon.build_shot_specs()
-
-	assert_eq(lab.get_selected_circuit(), MovementLab.CircuitOrder.FOCUS_THEN_SPLIT)
-	assert_eq(wide_fan.size(), 3)
-	assert_almost_eq(_fan_width_degrees(wide_fan), 24.0, 0.001)
-	assert_true(_fan_width_degrees(wide_fan) > _fan_width_degrees(focused_fan))
+	var default_shots := weapon.build_shot_specs()
+	assert_eq(default_shots.size(), 3)
+	assert_almost_eq(_fan_width_degrees(default_shots), 12.0, 0.001)
+	assert_almost_eq(default_shots[0].direction.angle(), deg_to_rad(6.0), 0.0001)
+	assert_almost_eq(default_shots[0].speed, 540.0, 0.001)
+	assert_almost_eq(default_shots[1].speed, 720.0, 0.001)
+	assert_almost_eq(default_shots[2].speed, 900.0, 0.001)
+	assert_almost_eq(default_shots[0].lifetime_seconds, 0.9, 0.001)
+	assert_almost_eq(default_shots[1].lifetime_seconds, 1.5, 0.001)
+	assert_almost_eq(default_shots[2].lifetime_seconds, 2.1, 0.001)
 	assert_eq(
-		wide_fan[0].provenance,
-		PackedStringArray(["focus", "split"])
+		default_shots[0].provenance,
+		PackedStringArray([
+			"split",
+			"focus",
+			"reverse_order",
+			"velocity_gradient",
+			"lifetime_gradient",
+		])
 	)
-	assert_true(lab.get_circuit_status_text().contains("Focus -> Split"))
+	assert_true(lab.get_circuit_preview_text().contains("540 / 720 / 900"))
+	assert_true(lab.get_circuit_preview_text().contains("0.90 / 1.50 / 2.10"))
 
-	lab.select_circuit(
-		MovementLab.CircuitOrder.SPLIT_FOCUS_THEN_VELOCITY_GRADIENT
-	)
-	var layered_speed_fan := weapon.build_shot_specs()
-
+	assert_true(lab.select_slot(2))
+	assert_true(lab.move_selected_module(1))
+	assert_eq(lab.get_selected_slot(), 3)
 	assert_eq(
-		lab.get_selected_circuit(),
-		MovementLab.CircuitOrder.SPLIT_FOCUS_THEN_VELOCITY_GRADIENT
+		lab.get_module_ids(),
+		PackedStringArray([
+			"split",
+			"focus",
+			"velocity_gradient",
+			"reverse_order",
+			"lifetime_gradient",
+		])
 	)
-	assert_eq(layered_speed_fan.size(), 3)
-	assert_almost_eq(_fan_width_degrees(layered_speed_fan), 12.0, 0.001)
-	assert_almost_eq(layered_speed_fan[0].speed, 540.0, 0.001)
-	assert_almost_eq(layered_speed_fan[1].speed, 720.0, 0.001)
-	assert_almost_eq(layered_speed_fan[2].speed, 900.0, 0.001)
-	assert_eq(
-		layered_speed_fan[0].provenance,
-		PackedStringArray(["split", "focus", "velocity_gradient"])
-	)
-	assert_true(lab.get_circuit_status_text().contains("540 / 720 / 900"))
+	assert_eq(weapon.get_module_ids(), lab.get_module_ids())
+	assert_true(lab.get_circuit_status_text().contains("[Reverse Order]"))
 
-	lab.select_circuit(
-		MovementLab.CircuitOrder.VELOCITY_GRADIENT_THEN_SPLIT_FOCUS
-	)
-	var uniform_speed_fan := weapon.build_shot_specs()
+	var reversed_after_speed := weapon.build_shot_specs()
+	assert_eq(reversed_after_speed.size(), 3)
+	assert_almost_eq(reversed_after_speed[0].direction.angle(), deg_to_rad(6.0), 0.0001)
+	assert_almost_eq(reversed_after_speed[0].speed, 900.0, 0.001)
+	assert_almost_eq(reversed_after_speed[1].speed, 720.0, 0.001)
+	assert_almost_eq(reversed_after_speed[2].speed, 540.0, 0.001)
+	assert_almost_eq(reversed_after_speed[0].lifetime_seconds, 0.9, 0.001)
+	assert_almost_eq(reversed_after_speed[2].lifetime_seconds, 2.1, 0.001)
+	assert_true(lab.get_circuit_preview_text().contains("900 / 720 / 540"))
 
+	assert_true(lab.move_selected_module(1))
+	assert_eq(lab.get_selected_slot(), 4)
 	assert_eq(
-		lab.get_selected_circuit(),
-		MovementLab.CircuitOrder.VELOCITY_GRADIENT_THEN_SPLIT_FOCUS
+		lab.get_module_ids(),
+		PackedStringArray([
+			"split",
+			"focus",
+			"velocity_gradient",
+			"lifetime_gradient",
+			"reverse_order",
+		])
 	)
-	assert_eq(uniform_speed_fan.size(), 3)
-	assert_almost_eq(_fan_width_degrees(uniform_speed_fan), 12.0, 0.001)
-	assert_eq(
-		uniform_speed_fan[0].provenance,
-		PackedStringArray(["velocity_gradient", "split", "focus"])
-	)
-	assert_true(lab.get_circuit_status_text().contains("uniform 720"))
-	for shot_index in range(uniform_speed_fan.size()):
-		assert_eq(
-			uniform_speed_fan[shot_index].direction,
-			layered_speed_fan[shot_index].direction
-		)
-		assert_almost_eq(uniform_speed_fan[shot_index].speed, 720.0, 0.001)
-		assert_eq(layered_speed_fan[shot_index].generation_depth, 1)
-		assert_eq(uniform_speed_fan[shot_index].generation_depth, 1)
+	var reversed_after_both_gradients := weapon.build_shot_specs()
+	assert_almost_eq(reversed_after_both_gradients[0].speed, 900.0, 0.001)
+	assert_almost_eq(reversed_after_both_gradients[2].speed, 540.0, 0.001)
+	assert_almost_eq(reversed_after_both_gradients[0].lifetime_seconds, 2.1, 0.001)
+	assert_almost_eq(reversed_after_both_gradients[2].lifetime_seconds, 0.9, 0.001)
+	assert_true(lab.get_circuit_preview_text().contains("2.10 / 1.50 / 0.90"))
 
-	for shot in focused_fan:
-		assert_eq(shot.generation_depth, 1)
-	for shot in wide_fan:
-		assert_eq(shot.generation_depth, 1)
+	lab.reset_circuit()
+	assert_eq(lab.get_selected_slot(), 0)
+	assert_eq(
+		lab.get_module_ids(),
+		PackedStringArray([
+			"split",
+			"focus",
+			"reverse_order",
+			"velocity_gradient",
+			"lifetime_gradient",
+		])
+	)
+	assert_eq(weapon.get_module_ids(), lab.get_module_ids())
+	assert_true(lab.get_circuit_status_text().contains("[Split]"))
+	assert_true(lab.get_circuit_preview_text().contains("540 / 720 / 900"))
 
 
 func _fan_width_degrees(shots: Array[ShotSpec]) -> float:
 	assert(shots.size() >= 2)
-	return absf(rad_to_deg(shots[0].direction.angle_to(shots[shots.size() - 1].direction)))
+	return absf(
+		rad_to_deg(
+			shots[0].direction.angle_to(shots[shots.size() - 1].direction)
+		)
+	)

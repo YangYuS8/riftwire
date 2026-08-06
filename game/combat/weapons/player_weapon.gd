@@ -2,6 +2,7 @@ extends Node2D
 class_name PlayerWeapon
 
 signal projectile_fired(projectile: BaseProjectile)
+signal module_chain_changed(module_ids: PackedStringArray)
 
 const DEFAULT_CONFIG: BaseWeaponConfig = preload(
 	"res://game/combat/weapons/default_base_weapon_config.tres"
@@ -38,6 +39,27 @@ func get_aim_direction() -> Vector2:
 func get_fire_model() -> WeaponFireModel:
 	_ensure_dependencies()
 	return _fire_model
+
+
+func set_modules(next_modules: Array[Resource]) -> void:
+	var validated_resources: Array[Resource] = []
+	for resource in next_modules:
+		assert(resource is WeaponModule, "PlayerWeapon modules must inherit WeaponModule.")
+		var module := resource as WeaponModule
+		assert(
+			module.is_configuration_valid(),
+			"Invalid weapon module configuration: %s" % ", ".join(module.validation_errors())
+		)
+		validated_resources.append(resource)
+	modules = validated_resources
+	module_chain_changed.emit(get_module_ids())
+
+
+func get_module_ids() -> PackedStringArray:
+	var module_ids := PackedStringArray()
+	for module in _validated_modules():
+		module_ids.append(String(module.module_id))
+	return module_ids
 
 
 func build_shot_specs() -> Array[ShotSpec]:
