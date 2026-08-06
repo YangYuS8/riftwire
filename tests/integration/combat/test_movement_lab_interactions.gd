@@ -58,6 +58,10 @@ func test_reordered_live_weapon_spawns_the_specs_shown_in_preview() -> void:
 	lab.select_slot(2)
 	lab.move_selected_module(1)
 	lab.move_selected_module(1)
+	weapon.simulate_input(
+		PlayerInputFrame.new(0.0, false, false, Vector2.RIGHT, false, false),
+		0.0
+	)
 	var expected_specs := weapon.build_shot_specs()
 	assert_eq(expected_specs.size(), 3)
 	assert_true(lab.get_circuit_preview_text().contains("speed 900 / 720 / 540"))
