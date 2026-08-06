@@ -38,6 +38,52 @@ func test_lab_switches_between_real_module_orders() -> void:
 		PackedStringArray(["focus", "split"])
 	)
 	assert_true(lab.get_circuit_status_text().contains("Focus -> Split"))
+
+	lab.select_circuit(
+		MovementLab.CircuitOrder.SPLIT_FOCUS_THEN_VELOCITY_GRADIENT
+	)
+	var layered_speed_fan := weapon.build_shot_specs()
+
+	assert_eq(
+		lab.get_selected_circuit(),
+		MovementLab.CircuitOrder.SPLIT_FOCUS_THEN_VELOCITY_GRADIENT
+	)
+	assert_eq(layered_speed_fan.size(), 3)
+	assert_almost_eq(_fan_width_degrees(layered_speed_fan), 12.0, 0.001)
+	assert_almost_eq(layered_speed_fan[0].speed, 540.0, 0.001)
+	assert_almost_eq(layered_speed_fan[1].speed, 720.0, 0.001)
+	assert_almost_eq(layered_speed_fan[2].speed, 900.0, 0.001)
+	assert_eq(
+		layered_speed_fan[0].provenance,
+		PackedStringArray(["split", "focus", "velocity_gradient"])
+	)
+	assert_true(lab.get_circuit_status_text().contains("540 / 720 / 900"))
+
+	lab.select_circuit(
+		MovementLab.CircuitOrder.VELOCITY_GRADIENT_THEN_SPLIT_FOCUS
+	)
+	var uniform_speed_fan := weapon.build_shot_specs()
+
+	assert_eq(
+		lab.get_selected_circuit(),
+		MovementLab.CircuitOrder.VELOCITY_GRADIENT_THEN_SPLIT_FOCUS
+	)
+	assert_eq(uniform_speed_fan.size(), 3)
+	assert_almost_eq(_fan_width_degrees(uniform_speed_fan), 12.0, 0.001)
+	assert_eq(
+		uniform_speed_fan[0].provenance,
+		PackedStringArray(["velocity_gradient", "split", "focus"])
+	)
+	assert_true(lab.get_circuit_status_text().contains("uniform 720"))
+	for shot_index in range(uniform_speed_fan.size()):
+		assert_eq(
+			uniform_speed_fan[shot_index].direction,
+			layered_speed_fan[shot_index].direction
+		)
+		assert_almost_eq(uniform_speed_fan[shot_index].speed, 720.0, 0.001)
+		assert_eq(layered_speed_fan[shot_index].generation_depth, 1)
+		assert_eq(uniform_speed_fan[shot_index].generation_depth, 1)
+
 	for shot in focused_fan:
 		assert_eq(shot.generation_depth, 1)
 	for shot in wide_fan:

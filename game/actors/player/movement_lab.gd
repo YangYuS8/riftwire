@@ -6,6 +6,8 @@ signal circuit_changed(order: int, display_name: String)
 enum CircuitOrder {
 	SPLIT_THEN_FOCUS,
 	FOCUS_THEN_SPLIT,
+	SPLIT_FOCUS_THEN_VELOCITY_GRADIENT,
+	VELOCITY_GRADIENT_THEN_SPLIT_FOCUS,
 }
 
 const SPLIT_MODULE: Resource = preload(
@@ -14,11 +16,20 @@ const SPLIT_MODULE: Resource = preload(
 const FOCUS_MODULE: Resource = preload(
 	"res://game/content/modules/default_focus_module.tres"
 )
+const VELOCITY_GRADIENT_MODULE: Resource = preload(
+	"res://game/content/modules/default_velocity_gradient_module.tres"
+)
 const SPLIT_THEN_FOCUS_LABEL: String = (
 	"Circuit 1: Split -> Focus | 3 shots, 12-degree focused fan"
 )
 const FOCUS_THEN_SPLIT_LABEL: String = (
 	"Circuit 2: Focus -> Split | 3 shots, 24-degree wide fan"
+)
+const SPLIT_FOCUS_THEN_VELOCITY_GRADIENT_LABEL: String = (
+	"Circuit 3: Split -> Focus -> Velocity Gradient | 540 / 720 / 900 speed"
+)
+const VELOCITY_GRADIENT_THEN_SPLIT_FOCUS_LABEL: String = (
+	"Circuit 4: Velocity Gradient -> Split -> Focus | uniform 720 speed"
 )
 
 var _selected_circuit: int = CircuitOrder.SPLIT_THEN_FOCUS
@@ -47,6 +58,14 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			select_circuit(CircuitOrder.SPLIT_THEN_FOCUS)
 		KEY_2:
 			select_circuit(CircuitOrder.FOCUS_THEN_SPLIT)
+		KEY_3:
+			select_circuit(
+				CircuitOrder.SPLIT_FOCUS_THEN_VELOCITY_GRADIENT
+			)
+		KEY_4:
+			select_circuit(
+				CircuitOrder.VELOCITY_GRADIENT_THEN_SPLIT_FOCUS
+			)
 
 
 func select_circuit(order: int) -> void:
@@ -65,6 +84,22 @@ func select_circuit(order: int) -> void:
 				FOCUS_THEN_SPLIT_LABEL,
 				FOCUS_MODULE,
 				SPLIT_MODULE
+			)
+		CircuitOrder.SPLIT_FOCUS_THEN_VELOCITY_GRADIENT:
+			_apply_circuit(
+				order,
+				SPLIT_FOCUS_THEN_VELOCITY_GRADIENT_LABEL,
+				SPLIT_MODULE,
+				FOCUS_MODULE,
+				VELOCITY_GRADIENT_MODULE
+			)
+		CircuitOrder.VELOCITY_GRADIENT_THEN_SPLIT_FOCUS:
+			_apply_circuit(
+				order,
+				VELOCITY_GRADIENT_THEN_SPLIT_FOCUS_LABEL,
+				VELOCITY_GRADIENT_MODULE,
+				SPLIT_MODULE,
+				FOCUS_MODULE
 			)
 		_:
 			assert(false, "Unknown movement-lab circuit order: %s" % order)
@@ -88,11 +123,14 @@ func _apply_circuit(
 	order: int,
 	display_name: String,
 	first_module: Resource,
-	second_module: Resource
+	second_module: Resource,
+	third_module: Resource = null
 ) -> void:
 	var configured_modules: Array[Resource] = []
 	configured_modules.append(first_module)
 	configured_modules.append(second_module)
+	if third_module != null:
+		configured_modules.append(third_module)
 	_weapon.modules = configured_modules
 	_selected_circuit = order
 	_circuit_status.text = display_name

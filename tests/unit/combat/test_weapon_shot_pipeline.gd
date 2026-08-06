@@ -146,6 +146,107 @@ func test_split_and_focus_order_changes_visible_fan_width() -> void:
 		assert_eq(shot.generation_depth, 1)
 
 
+func test_velocity_gradient_assigns_ordered_speed_multipliers_without_generating_shots() -> void:
+	var velocity_gradient := VelocityGradientShotModule.new()
+	velocity_gradient.minimum_multiplier = 0.75
+	velocity_gradient.maximum_multiplier = 1.25
+	var shots: Array[ShotSpec] = [
+		ShotSpec.new(
+			Vector2.RIGHT.rotated(deg_to_rad(-6.0)),
+			720.0,
+			1.5,
+			10.0,
+			1,
+			PackedStringArray(["split", "focus"])
+		),
+		ShotSpec.new(
+			Vector2.RIGHT,
+			720.0,
+			1.5,
+			10.0,
+			1,
+			PackedStringArray(["split", "focus"])
+		),
+		ShotSpec.new(
+			Vector2.RIGHT.rotated(deg_to_rad(6.0)),
+			720.0,
+			1.5,
+			10.0,
+			1,
+			PackedStringArray(["split", "focus"])
+		),
+	]
+
+	var result := velocity_gradient.transform(shots)
+
+	assert_eq(result.size(), 3)
+	assert_almost_eq(result[0].speed, 540.0, 0.001)
+	assert_almost_eq(result[1].speed, 720.0, 0.001)
+	assert_almost_eq(result[2].speed, 900.0, 0.001)
+	for shot_index in range(result.size()):
+		assert_eq(result[shot_index].direction, shots[shot_index].direction)
+		assert_eq(result[shot_index].generation_depth, 1)
+		assert_eq(
+			result[shot_index].provenance,
+			PackedStringArray(["split", "focus", "velocity_gradient"])
+		)
+		assert_almost_eq(shots[shot_index].speed, 720.0, 0.001)
+
+
+func test_single_shot_velocity_gradient_uses_midpoint_multiplier() -> void:
+	var velocity_gradient := VelocityGradientShotModule.new()
+	velocity_gradient.minimum_multiplier = 0.75
+	velocity_gradient.maximum_multiplier = 1.25
+	var input := ShotSpec.new(Vector2.RIGHT, 720.0, 1.5, 10.0)
+
+	var result := velocity_gradient.transform([input])
+
+	assert_eq(result.size(), 1)
+	assert_almost_eq(result[0].speed, 720.0, 0.001)
+	assert_eq(result[0].generation_depth, 0)
+	assert_eq(result[0].provenance, PackedStringArray(["velocity_gradient"]))
+	assert_almost_eq(input.speed, 720.0, 0.001)
+	assert_true(input.provenance.is_empty())
+
+
+func test_velocity_gradient_order_changes_only_speed_distribution() -> void:
+	var split := SplitShotModule.new()
+	split.projectile_count = 3
+	split.spread_degrees = 24.0
+	var focus := FocusShotModule.new()
+	focus.strength = 0.5
+	var velocity_gradient := VelocityGradientShotModule.new()
+	velocity_gradient.minimum_multiplier = 0.75
+	velocity_gradient.maximum_multiplier = 1.25
+	var layered_chain: Array[WeaponModule] = [split, focus, velocity_gradient]
+	var uniform_chain: Array[WeaponModule] = [velocity_gradient, split, focus]
+	var base_spec := ShotSpec.new(Vector2.RIGHT, 720.0, 1.5, 10.0)
+
+	var layered_shots := WeaponShotPipeline.new(layered_chain).build(base_spec)
+	var uniform_shots := WeaponShotPipeline.new(uniform_chain).build(base_spec)
+
+	assert_eq(layered_shots.size(), 3)
+	assert_eq(uniform_shots.size(), 3)
+	assert_almost_eq(_fan_width_degrees(layered_shots), 12.0, 0.001)
+	assert_almost_eq(_fan_width_degrees(uniform_shots), 12.0, 0.001)
+	assert_almost_eq(layered_shots[0].speed, 540.0, 0.001)
+	assert_almost_eq(layered_shots[1].speed, 720.0, 0.001)
+	assert_almost_eq(layered_shots[2].speed, 900.0, 0.001)
+	for shot_index in range(uniform_shots.size()):
+		assert_eq(layered_shots[shot_index].direction, uniform_shots[shot_index].direction)
+		assert_almost_eq(uniform_shots[shot_index].speed, 720.0, 0.001)
+		assert_eq(layered_shots[shot_index].generation_depth, 1)
+		assert_eq(uniform_shots[shot_index].generation_depth, 1)
+	assert_eq(
+		layered_shots[0].provenance,
+		PackedStringArray(["split", "focus", "velocity_gradient"])
+	)
+	assert_eq(
+		uniform_shots[0].provenance,
+		PackedStringArray(["velocity_gradient", "split", "focus"])
+	)
+
+
 func test_pipeline_caps_output_at_thirty_two_specs() -> void:
 	var modules: Array[WeaponModule] = []
 	for _module_index in range(4):
