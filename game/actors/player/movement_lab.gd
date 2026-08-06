@@ -34,9 +34,13 @@ func _ready() -> void:
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey:
 		return
-	var key_event := event as InputEventKey
-	if not key_event.pressed or key_event.echo:
-		return
+	if handle_circuit_key_event(event as InputEventKey):
+		get_viewport().set_input_as_handled()
+
+
+func handle_circuit_key_event(key_event: InputEventKey) -> bool:
+	if key_event == null or not key_event.pressed or key_event.echo:
+		return false
 	var pressed_key := (
 		key_event.physical_keycode
 		if key_event.physical_keycode != 0
@@ -59,6 +63,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			move_selected_module(1)
 		KEY_R:
 			reset_circuit()
+		_:
+			return false
+	return true
 
 
 func select_slot(slot_index: int) -> bool:
@@ -193,9 +200,13 @@ func _resolve_dependencies() -> void:
 	if _weapon == null:
 		_weapon = get_node_or_null("Player/Weapon") as PlayerWeapon
 	if _circuit_status == null:
-		_circuit_status = get_node_or_null("CircuitStatus") as Label
+		_circuit_status = get_node_or_null(
+			"CircuitHud/Root/CircuitStatus"
+		) as Label
 	if _circuit_preview == null:
-		_circuit_preview = get_node_or_null("CircuitPreview") as Label
+		_circuit_preview = get_node_or_null(
+			"CircuitHud/Root/CircuitPreview"
+		) as Label
 	assert(_weapon != null, "MovementLab requires Player/Weapon.")
 	assert(_circuit_status != null, "MovementLab requires CircuitStatus.")
 	assert(_circuit_preview != null, "MovementLab requires CircuitPreview.")
