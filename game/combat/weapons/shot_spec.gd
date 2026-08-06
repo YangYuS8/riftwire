@@ -75,6 +75,17 @@ func with_direction(p_direction: Vector2, module_id: StringName = &"") -> ShotSp
 	)
 
 
+func with_speed(p_speed: float, module_id: StringName = &"") -> ShotSpec:
+	return ShotSpec.new(
+		_direction,
+		p_speed,
+		_lifetime_seconds,
+		_damage,
+		_generation_depth,
+		_provenance_with(module_id)
+	)
+
+
 func with_damage(p_damage: float, module_id: StringName = &"") -> ShotSpec:
 	return ShotSpec.new(
 		_direction,
