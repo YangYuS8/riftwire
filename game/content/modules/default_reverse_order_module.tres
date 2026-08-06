@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="ReverseShotOrderModule" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/content/modules/reverse_shot_order_module.gd" id="1_reverse"]
+
+[resource]
+script = ExtResource("1_reverse")
