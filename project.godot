@@ -4,7 +4,7 @@
 ;
 ; Format:
 ;   [section] ; section goes between []
-;   param=value ; assign values to parameters
+;   param=value
 
 config_version=5
 
@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Riftwire"
 config/description="A side-scrolling action roguelite built around modular weapon circuits."
-run/main_scene="res://game/actors/player/movement_lab.tscn"
+run/main_scene="res://game/dungeon/rooms/rift_chamber_01.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 
 [display]
