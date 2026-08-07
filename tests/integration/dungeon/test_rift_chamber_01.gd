@@ -17,7 +17,7 @@ func test_room_locks_until_both_live_enemies_are_destroyed() -> void:
 	player.set_physics_process(false)
 	var enemy_container := room.get_node("Enemies")
 	var left_enemy := enemy_container.get_node("LeftPatrol") as PatrolEnemy
-	var right_enemy := enemy_container.get_node("RightPatrol") as PatrolEnemy
+	var right_enemy := enemy_container.get_node("RightSentry") as RiftSentry
 	left_enemy.set_physics_process(false)
 	right_enemy.set_physics_process(false)
 	var controller := room.get_node("EncounterController") as EncounterController
@@ -25,6 +25,8 @@ func test_room_locks_until_both_live_enemies_are_destroyed() -> void:
 	var right_gate := room.get_node("RightGate") as EncounterGate
 	var status := room.get_node("CombatHud/Root/EncounterStatus") as Label
 
+	assert_not_null(left_enemy)
+	assert_not_null(right_enemy)
 	assert_eq(controller.get_remaining_enemy_count(), 2)
 	assert_false(controller.is_completed())
 	assert_true(left_gate.is_locked())
